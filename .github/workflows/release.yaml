@@ -6,7 +6,7 @@ on:
 name: Release "toggl-rs"
 jobs:
   build:
-    name: Release (crates.io & github.com)
+    name: Release (crates.io)
     runs-on: ubuntu-latest
     env:
       CARGO_TERM_COLOR: always
