@@ -1,0 +1,11 @@
+[package]
+name = "toggl-rs"
+version = "0.0.1"
+edition = "2021"
+description = "toggl-rs is a library to interact with track.toggl.com APIs"
+authors = ["Stefan Ruzitschka <stefan@icepuma.dev>"]
+repository = "https://github.com/icepuma/toggl-rs"
+readme = "README.md"
+license = "WTFPL"
+
+[dependencies]
