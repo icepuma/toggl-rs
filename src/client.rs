@@ -58,6 +58,7 @@ impl TogglClient {
         self.response(debug, response)
     }
 
+    #[allow(dead_code)]
     fn empty_request(&self, debug: bool, method: Method, uri: &str) -> Result<()> {
         let request = self.base_request(method, uri)?;
 
@@ -72,6 +73,7 @@ impl TogglClient {
         self.empty_response(response)
     }
 
+    #[allow(dead_code)]
     fn request_with_body<D: DeserializeOwned + Debug, S: Serialize + Debug>(
         &self,
         debug: bool,
