@@ -1,4 +1,4 @@
-use crate::{client::me::MeClient, error::Result};
+use crate::error::Result;
 use pretty_assertions::assert_eq;
 use reqwest::Method;
 use serde_json::json;
@@ -27,8 +27,7 @@ fn get_me() -> Result<()> {
     });
 
     with_mockito(Method::GET, "/me", 200, response, |toggl_client| {
-        let me_client = MeClient::new(toggl_client);
-        let me = me_client.get(true)?;
+        let me = toggl_client.me().get_me(true)?;
 
         assert_eq!(Some(API_TOKEN.to_string()), me.api_token);
         assert_eq!(1234567, me.default_workspace_id);

@@ -4,10 +4,13 @@ use reqwest::{blocking, Method, StatusCode, Url};
 use serde::{de::DeserializeOwned, Serialize};
 use std::fmt::Debug;
 
+use self::me::MeClient;
+
 pub mod me;
 
 pub const DEFAULT_BASE_URL: &str = "https://api.track.toggl.com/api/v9/";
 
+#[derive(Debug, Clone)]
 pub struct TogglClient {
     base_url: Url,
     client: blocking::Client,
@@ -140,8 +143,7 @@ impl TogglClient {
         }
     }
 
-    // me
-    pub fn me(&self, debug: bool) -> Result<crate::model::me::Me> {
-        self.request(debug, Method::GET, "me")
+    pub fn me(&self) -> MeClient {
+        MeClient::new(self.clone())
     }
 }

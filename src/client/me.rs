@@ -11,7 +11,7 @@ impl MeClient {
         MeClient { client }
     }
 
-    pub fn get(&self, debug: bool) -> Result<Me> {
+    pub fn get_me(&self, debug: bool) -> Result<Me> {
         self.client.request(debug, Method::GET, "me")
     }
 }
