@@ -1,6 +1,5 @@
+use crate::{client::TogglClient, error::Result};
 use reqwest::Method;
-
-use crate::error::Result;
 
 pub mod me;
 
@@ -11,7 +10,7 @@ fn with_mockito(
     url: &str,
     status: usize,
     response: serde_json::Value,
-    test: impl FnOnce() -> Result<()>,
+    test: impl FnOnce(TogglClient) -> Result<()>,
 ) -> Result<()> {
     let mock = mockito::mock(method.as_str(), url)
         .with_status(status)
@@ -19,7 +18,8 @@ fn with_mockito(
         .expect(1)
         .create();
 
-    let result = test();
+    let toggl_client = TogglClient::new(API_TOKEN.to_string())?;
+    let result = test(toggl_client);
 
     mock.assert();
 

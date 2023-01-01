@@ -1,4 +1,4 @@
-use crate::{client::TogglClient, error::Result};
+use crate::{client::me::MeClient, error::Result};
 use pretty_assertions::assert_eq;
 use reqwest::Method;
 use serde_json::json;
@@ -7,8 +7,6 @@ use super::{with_mockito, API_TOKEN};
 
 #[test]
 fn get_me() -> Result<()> {
-    let client = TogglClient::new(API_TOKEN.to_string())?;
-
     let response = json!({
         "api_token": API_TOKEN,
         "at": "2020-01-01T00:00:00+00:00",
@@ -28,8 +26,9 @@ fn get_me() -> Result<()> {
         "updated_at": "2020-01-01T00:00:00+00:00"
     });
 
-    with_mockito(Method::GET, "/me", 200, response, || {
-        let me = client.get_me(true)?;
+    with_mockito(Method::GET, "/me", 200, response, |toggl_client| {
+        let me_client = MeClient::new(toggl_client);
+        let me = me_client.get(true)?;
 
         assert_eq!(Some(API_TOKEN.to_string()), me.api_token);
         assert_eq!(1234567, me.default_workspace_id);

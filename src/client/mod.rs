@@ -1,9 +1,10 @@
-use std::fmt::Debug;
-
 use crate::error::{Result, TogglError};
 use owo_colors::OwoColorize;
 use reqwest::{blocking, Method, StatusCode, Url};
 use serde::{de::DeserializeOwned, Serialize};
+use std::fmt::Debug;
+
+pub mod me;
 
 pub const DEFAULT_BASE_URL: &str = "https://api.track.toggl.com/api/v9/";
 
@@ -140,7 +141,7 @@ impl TogglClient {
     }
 
     // me
-    pub fn get_me(&self, debug: bool) -> Result<crate::model::me::Me> {
+    pub fn me(&self, debug: bool) -> Result<crate::model::me::Me> {
         self.request(debug, Method::GET, "me")
     }
 }
