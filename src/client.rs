@@ -5,6 +5,8 @@ use owo_colors::OwoColorize;
 use reqwest::{blocking, Method, StatusCode, Url};
 use serde::{de::DeserializeOwned, Serialize};
 
+pub const DEFAULT_BASE_URL: &str = "https://api.track.toggl.com/api/v9/";
+
 pub struct TogglClient {
     base_url: Url,
     client: blocking::Client,
@@ -133,5 +135,10 @@ impl TogglClient {
                 Err(_) => Err(TogglError::LibraryError(format!("{}", status))),
             },
         }
+    }
+
+    // me
+    pub fn get_me(&self, debug: bool) -> Result<crate::model::me::Me> {
+        self.request(debug, Method::GET, "me")
     }
 }
