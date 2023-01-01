@@ -1,8 +1,29 @@
 use crate::{client::TogglClient, error::Result};
 use pretty_assertions::assert_eq;
+use reqwest::Method;
 use serde_json::json;
 
 const API_TOKEN: &str = "cb7bf7efa6d652046abd2f7d84ee18c1";
+
+fn with_mockito(
+    method: Method,
+    url: &str,
+    status: usize,
+    response: serde_json::Value,
+    test: impl FnOnce() -> Result<()>,
+) -> Result<()> {
+    let mock = mockito::mock(method.as_str(), url)
+        .with_status(status)
+        .with_body(response.to_string())
+        .expect(1)
+        .create();
+
+    let result = test();
+
+    mock.assert();
+
+    result
+}
 
 #[test]
 fn get_me() -> Result<()> {
@@ -27,23 +48,12 @@ fn get_me() -> Result<()> {
         "updated_at": "2020-01-01T00:00:00+00:00"
     });
 
-    let get_me = mockito::mock("GET", "/me")
-        .with_header(
-            "Authorization",
-            "Basic Y2I3YmY3ZWZhNmQ2NTIwNDZhYmQyZjdkODRlZTE4YzE6YXBpX3Rva2Vu",
-        )
-        .with_status(200)
-        .with_body(response.to_string())
-        .expect(1)
-        .create();
-
-    {
+    with_mockito(Method::GET, "/me", 200, response, || {
         let me = client.get_me(true)?;
 
         assert_eq!(Some(API_TOKEN.to_string()), me.api_token);
-    }
+        assert_eq!(1234567, me.default_workspace_id);
 
-    get_me.assert();
-
-    Ok(())
+        Ok(())
+    })
 }
