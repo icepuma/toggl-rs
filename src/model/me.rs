@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{Date, DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -81,4 +81,51 @@ pub struct Organization {
     pub suspended_at: Option<DateTime<Utc>>,
     pub trial_info: TrialInfo,
     pub user_count: u32,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RecurringParameter {
+    pub custom_period: Option<i64>,
+    pub estimated_seconds: i64,
+    pub parameter_end_date: Option<NaiveDate>,
+    pub parameter_start_date: NaiveDate,
+    pub period: String,
+    pub project_start_date: NaiveDate,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct CurrentPeriod {
+    pub end_date: NaiveDate,
+    pub start_date: NaiveDate,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Project {
+    pub id: u32,
+    pub workspace_id: u32,
+    pub client_id: Option<u32>,
+    pub name: String,
+    pub is_private: bool,
+    pub active: bool,
+    pub at: DateTime<Utc>,
+    pub created_at: DateTime<Utc>,
+    pub server_deleted_at: Option<DateTime<Utc>>,
+    pub color: String,
+    pub billable: Option<bool>,
+    pub template: Option<bool>,
+    pub auto_estimates: Option<bool>,
+    pub estimated_hours: Option<u32>,
+    pub rate: Option<f32>,
+    pub currency: Option<String>,
+    pub recurring: bool,
+    pub recurring_parameters: Option<Vec<RecurringParameter>>,
+    pub current_period: Option<CurrentPeriod>,
+    pub fixed_fee: Option<f32>,
+    pub actual_hours: Option<u32>,
+    pub end_date: Option<DateTime<Utc>>,
+    pub start_date: Option<DateTime<Utc>>,
+    pub first_time_entry: Option<String>,
+    pub rate_last_updated: Option<DateTime<Utc>>,
+    // deprecated: pub wid: u32,
+    // deprecated: pub cid: Option<u32>,
 }

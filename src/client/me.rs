@@ -48,7 +48,9 @@ impl MeClient {
         self.client.request(debug, Method::GET, "me/organizations")
     }
 
-    // https://developers.track.toggl.com/docs/api/me#get-projects
+    pub fn get_me_projects(&self, debug: bool) -> Result<Vec<model::me::Project>> {
+        self.client.request(debug, Method::GET, "me/projects")
+    }
 
     // https://developers.track.toggl.com/docs/api/me#get-projectspaginated
 
