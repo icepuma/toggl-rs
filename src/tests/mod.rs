@@ -9,14 +9,21 @@ fn with_mockito(
     method: Method,
     url: &str,
     status: usize,
-    response: serde_json::Value,
+    response: Option<serde_json::Value>,
     test: impl FnOnce(TogglClient) -> Result<()>,
 ) -> Result<()> {
-    let mock = mockito::mock(method.as_str(), url)
-        .with_status(status)
-        .with_body(response.to_string())
-        .expect(1)
-        .create();
+    let mock = if let Some(response) = response {
+        mockito::mock(method.as_str(), url)
+            .with_status(status)
+            .with_body(response.to_string())
+            .expect(1)
+            .create()
+    } else {
+        mockito::mock(method.as_str(), url)
+            .with_status(status)
+            .expect(1)
+            .create()
+    };
 
     let toggl_client = TogglClient::new(API_TOKEN.to_string())?;
     let result = test(toggl_client);

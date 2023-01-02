@@ -53,3 +53,32 @@ pub struct Location {
     pub country_code: String,
     pub country_name: String,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct TrialInfo {
+    pub trial: bool,
+    pub trial_available: bool,
+    pub trial_end_date: Option<DateTime<Utc>>,
+    pub next_payment_date: Option<DateTime<Utc>>,
+    pub last_pricing_plan_id: Option<u32>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Organization {
+    pub admin: bool,
+    pub at: DateTime<Utc>,
+    pub created_at: DateTime<Utc>,
+    pub id: u32,
+    pub is_chargify: bool,
+    pub is_multi_workspace_enabled: bool,
+    pub is_unified: bool,
+    pub max_workspaces: u32,
+    pub name: String,
+    pub owner: bool,
+    pub payment_methods: Option<String>,
+    pub pricing_plan_id: u32,
+    pub server_deleted_at: Option<DateTime<Utc>>,
+    pub suspended_at: Option<DateTime<Utc>>,
+    pub trial_info: TrialInfo,
+    pub user_count: u32,
+}

@@ -26,7 +26,7 @@ fn get_me() -> Result<()> {
         "updated_at": "2020-01-01T00:00:00+00:00"
     });
 
-    with_mockito(Method::GET, "/me", 200, response, |toggl_client| {
+    with_mockito(Method::GET, "/me", 200, Some(response), |toggl_client| {
         let me = toggl_client.me().get_me(true)?;
 
         assert_eq!(Some(API_TOKEN.to_string()), me.api_token);
@@ -55,15 +55,21 @@ fn get_me_clients() -> Result<()> {
       }
     ]);
 
-    with_mockito(Method::GET, "/me/clients", 200, response, |toggl_client| {
-        let me_clients = toggl_client.me().get_me_clients(true)?;
+    with_mockito(
+        Method::GET,
+        "/me/clients",
+        200,
+        Some(response),
+        |toggl_client| {
+            let me_clients = toggl_client.me().get_me_clients(true)?;
 
-        assert_eq!(2, me_clients.len());
-        assert_eq!(1234567, me_clients[0].id);
-        assert_eq!(7654321, me_clients[1].id);
+            assert_eq!(2, me_clients.len());
+            assert_eq!(1234567, me_clients[0].id);
+            assert_eq!(7654321, me_clients[1].id);
 
-        Ok(())
-    })
+            Ok(())
+        },
+    )
 }
 
 #[test]
@@ -250,14 +256,20 @@ fn get_me_features() -> Result<()> {
       }
     ]);
 
-    with_mockito(Method::GET, "/me/features", 200, response, |toggl_client| {
-        let me_features = toggl_client.me().get_me_features(true)?;
+    with_mockito(
+        Method::GET,
+        "/me/features",
+        200,
+        Some(response),
+        |toggl_client| {
+            let me_features = toggl_client.me().get_me_features(true)?;
 
-        assert_eq!("free", me_features[0].features[0].name);
-        assert_eq!(true, me_features[0].features[0].enabled);
+            assert_eq!("free", me_features[0].features[0].name);
+            assert_eq!(true, me_features[0].features[0].enabled);
 
-        Ok(())
-    })
+            Ok(())
+        },
+    )
 }
 
 #[test]
@@ -270,15 +282,81 @@ fn get_me_locations() -> Result<()> {
         "country_name": "United States",
     });
 
-    with_mockito(Method::GET, "/me/location", 200, response, |toggl_client| {
-        let me_location = toggl_client.me().get_me_location(true)?;
+    with_mockito(
+        Method::GET,
+        "/me/location",
+        200,
+        Some(response),
+        |toggl_client| {
+            let me_location = toggl_client.me().get_me_location(true)?;
 
-        assert_eq!("New York", me_location.city);
-        assert_eq!("40.730610,-73.935242", me_location.city_lat_long);
-        assert_eq!("New York", me_location.state);
-        assert_eq!("US", me_location.country_code);
-        assert_eq!("United States", me_location.country_name);
+            assert_eq!("New York", me_location.city);
+            assert_eq!("40.730610,-73.935242", me_location.city_lat_long);
+            assert_eq!("New York", me_location.state);
+            assert_eq!("US", me_location.country_code);
+            assert_eq!("United States", me_location.country_name);
+
+            Ok(())
+        },
+    )
+}
+
+#[test]
+fn get_me_logged() -> Result<()> {
+    with_mockito(Method::GET, "/me/logged", 200, None, |toggl_client| {
+        let me_logged = toggl_client.me().get_me_logged(true);
+
+        assert!(me_logged.is_ok());
 
         Ok(())
     })
+}
+
+#[test]
+fn get_me_organizations() -> Result<()> {
+    let response = json!([
+        {
+            "id": 1234567,
+            "name": "My Organization",
+            "pricing_plan_id": 0,
+            "created_at": "2021-11-12T19:33:19.860863Z",
+            "at": "2021-11-12T19:33:19.930603Z",
+            "server_deleted_at": null,
+            "is_multi_workspace_enabled": false,
+            "suspended_at": null,
+            "user_count": 1,
+            "trial_info": {
+              "trial": false,
+              "trial_available": false,
+              "trial_end_date": "2021-12-12T00:00:00Z",
+              "next_payment_date": null,
+              "last_pricing_plan_id": null
+            },
+            "is_chargify": false,
+            "is_unified": false,
+            "max_workspaces": 20,
+            "admin": true,
+            "owner": true
+          }
+    ]);
+
+    with_mockito(
+        Method::GET,
+        "/me/organizations",
+        200,
+        Some(response),
+        |toggl_client| {
+            let me_organizations = toggl_client.me().get_me_organizations(true)?;
+
+            assert_eq!(1234567, me_organizations[0].id);
+            assert_eq!("My Organization", me_organizations[0].name);
+            assert_eq!(0, me_organizations[0].pricing_plan_id);
+            assert_eq!(1, me_organizations[0].user_count);
+            assert_eq!(20, me_organizations[0].max_workspaces);
+            assert_eq!(true, me_organizations[0].admin);
+            assert_eq!(true, me_organizations[0].owner);
+
+            Ok(())
+        },
+    )
 }
