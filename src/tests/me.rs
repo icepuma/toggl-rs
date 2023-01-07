@@ -57,11 +57,11 @@ fn get_me_clients() -> Result<()> {
 
     with_mockito(
         Method::GET,
-        "/me/clients",
+        "/me/clients?since=1673134409",
         200,
         Some(response),
         |toggl_client| {
-            let me_clients = toggl_client.me().get_me_clients(true)?;
+            let me_clients = toggl_client.me().get_me_clients(true, Some(1673134409))?;
 
             assert_eq!(2, me_clients.len());
             assert_eq!(1234567, me_clients[0].id);
@@ -407,11 +407,14 @@ fn get_me_projects() -> Result<()> {
 
     with_mockito(
         Method::GET,
-        "/me/projects",
+        "/me/projects?include_archived=true&since=1673134409",
         200,
         Some(response),
         |toggl_client| {
-            let me_projects = toggl_client.me().get_me_projects(true)?;
+            let me_projects =
+                toggl_client
+                    .me()
+                    .get_me_projects(true, Some(true), Some(1673134409))?;
 
             assert_eq!(123456789, me_projects[0].id);
             assert_eq!(123456789, me_projects[0].workspace_id);

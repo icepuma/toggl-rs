@@ -22,8 +22,19 @@ impl MeClient {
     // https://developers.track.toggl.com/docs/api/me#put-me
 
     /// https://developers.track.toggl.com/docs/api/me#get-clients
-    pub fn get_me_clients(&self, debug: bool) -> Result<Vec<model::me::Client>> {
-        self.client.request(debug, Method::GET, "me/clients")
+    pub fn get_me_clients(
+        &self,
+        debug: bool,
+        since: Option<u32>,
+    ) -> Result<Vec<model::me::Client>> {
+        let mut params = vec![];
+
+        if let Some(since) = since {
+            params.push(("since".to_string(), since.to_string()));
+        }
+
+        self.client
+            .request_with_params(debug, Method::GET, "me/clients", &params)
     }
 
     // https://developers.track.toggl.com/docs/api/me#post-closeaccount
@@ -55,8 +66,24 @@ impl MeClient {
     }
 
     /// https://developers.track.toggl.com/docs/api/me#get-projects
-    pub fn get_me_projects(&self, debug: bool) -> Result<Vec<model::me::Project>> {
-        self.client.request(debug, Method::GET, "me/projects")
+    pub fn get_me_projects(
+        &self,
+        debug: bool,
+        include_archived: Option<bool>,
+        since: Option<u32>,
+    ) -> Result<Vec<model::me::Project>> {
+        let mut params = vec![];
+
+        if let Some(include_archived) = include_archived {
+            params.push(("include_archived".to_string(), include_archived.to_string()));
+        }
+
+        if let Some(since) = since {
+            params.push(("since".to_string(), since.to_string()));
+        }
+
+        self.client
+            .request_with_params(debug, Method::GET, "me/projects", &params)
     }
 
     /// https://developers.track.toggl.com/docs/api/me#get-projectspaginated
