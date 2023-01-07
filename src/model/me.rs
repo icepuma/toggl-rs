@@ -129,3 +129,12 @@ pub struct Project {
     // deprecated: pub wid: u32,
     // deprecated: pub cid: Option<u32>,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Tag {
+    pub at: DateTime<Utc>,
+    pub deleted_at: Option<DateTime<Utc>>,
+    pub id: u32,
+    pub name: String,
+    pub workspace_id: u32,
+}

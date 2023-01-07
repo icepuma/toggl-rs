@@ -495,3 +495,55 @@ fn get_me_projects_paginated() -> Result<()> {
         },
     )
 }
+
+#[test]
+fn get_me_tags() -> Result<()> {
+    let response = json!([
+      {
+        "id": 1234,
+        "workspace_id": 123456789,
+        "name": "aaa",
+        "at": "2022-10-03T15:44:20.424008Z"
+      },
+      {
+        "id": 1235,
+        "workspace_id": 123456789,
+        "name": "aaaa",
+        "at": "2022-10-03T15:49:09.73311Z"
+      },
+      {
+        "id": 1236,
+        "workspace_id": 123456789,
+        "name": "aaaa, fdsfsd",
+        "at": "2022-10-03T15:44:41.464544Z"
+      },
+      {
+        "id": 1237,
+        "workspace_id": 123456789,
+        "name": "aaa,bbb",
+        "at": "2022-10-03T15:43:46.015571Z"
+      },
+      {
+        "id": 1238,
+        "workspace_id": 123456789,
+        "name": "klklk",
+        "at": "2022-10-03T15:49:09.73311Z"
+      }
+    ]);
+
+    with_mockito(
+        Method::GET,
+        "/me/tags?since=1673134409",
+        200,
+        Some(response),
+        |toggl_client| {
+            let me_tags = toggl_client.me().get_me_tags(true, Some(1673134409))?;
+
+            assert_eq!(1234, me_tags[0].id);
+            assert_eq!(123456789, me_tags[0].workspace_id);
+            assert_eq!("aaa", me_tags[0].name);
+
+            Ok(())
+        },
+    )
+}

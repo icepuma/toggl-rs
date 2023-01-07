@@ -107,7 +107,17 @@ impl MeClient {
             .request_with_params(debug, Method::GET, "me/projects", &params)
     }
 
-    // https://developers.track.toggl.com/docs/api/me#get-tags
+    /// https://developers.track.toggl.com/docs/api/me#get-tags
+    pub fn get_me_tags(&self, debug: bool, since: Option<u32>) -> Result<Vec<model::me::Tag>> {
+        let mut params = vec![];
+
+        if let Some(since) = since {
+            params.push(("since".to_string(), since.to_string()));
+        }
+
+        self.client
+            .request_with_params(debug, Method::GET, "me/tags", &params)
+    }
 
     // https://developers.track.toggl.com/docs/api/me#get-tasks
 
