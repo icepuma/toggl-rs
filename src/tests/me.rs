@@ -424,3 +424,71 @@ fn get_me_projects() -> Result<()> {
         },
     )
 }
+
+#[test]
+fn get_me_projects_paginated() -> Result<()> {
+    let response = json!([
+      {
+        "id": 123456789,
+        "workspace_id": 123456789,
+        "client_id": null,
+        "name": "aaaa",
+        "is_private": true,
+        "active": true,
+        "at": "2023-01-02T23:02:17+00:00",
+        "created_at": "2022-10-03T15:47:08+00:00",
+        "server_deleted_at": null,
+        "color": "#465bb3",
+        "billable": false,
+        "template": false,
+        "auto_estimates": false,
+        "estimated_hours": null,
+        "rate": null,
+        "rate_last_updated": null,
+        "currency": null,
+        "recurring": true,
+        "recurring_parameters": [
+          {
+            "estimated_seconds": 0,
+            "period": "monthly",
+            "custom_period": null,
+            "project_start_date": "2022-10-03",
+            "parameter_start_date": "2023-01-02",
+            "parameter_end_date": null
+          }
+        ],
+        "current_period": {
+          "start_date": "2022-12-03",
+          "end_date": "2023-01-02"
+        },
+        "fixed_fee": null,
+        "actual_hours": null,
+        "start_date": "2022-10-03T00:00:00Z",
+        "wid": 123456789,
+        "cid": null
+      }
+    ]);
+
+    with_mockito(
+        Method::GET,
+        "/me/projects?start_project_id=123456789&since=1673134409",
+        200,
+        Some(response),
+        |toggl_client| {
+            let me_projects = toggl_client.me().get_me_projects_paginated(
+                true,
+                Some(123456789),
+                Some(1673134409),
+            )?;
+
+            assert_eq!(123456789, me_projects[0].id);
+            assert_eq!(123456789, me_projects[0].workspace_id);
+            assert_eq!(None, me_projects[0].client_id);
+            assert_eq!("aaaa", me_projects[0].name);
+            assert_eq!(true, me_projects[0].is_private);
+            assert_eq!(true, me_projects[0].active);
+
+            Ok(())
+        },
+    )
+}

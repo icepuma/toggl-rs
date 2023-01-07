@@ -62,6 +62,26 @@ impl TogglClient {
         self.response(debug, response)
     }
 
+    fn request_with_params<D: DeserializeOwned + Debug>(
+        &self,
+        debug: bool,
+        method: Method,
+        uri: &str,
+        params: &Vec<(String, String)>,
+    ) -> Result<D> {
+        let request = self.base_request(method, uri)?.query(&params);
+
+        if debug {
+            println!("{}", "Request:".bold().underline());
+            println!("{:?}", request);
+            println!();
+        }
+
+        let response = request.send()?;
+
+        self.response(debug, response)
+    }
+
     #[allow(dead_code)]
     fn empty_request(&self, debug: bool, method: Method, uri: &str) -> Result<()> {
         let request = self.base_request(method, uri)?;
