@@ -547,3 +547,57 @@ fn get_me_tags() -> Result<()> {
         },
     )
 }
+
+#[test]
+fn get_me_tasks() -> Result<()> {
+    let response = json!([
+      {
+        "id": 1234,
+        "name": "fsdfs",
+        "workspace_id": 123456789,
+        "project_id": 123456789,
+        "user_id": null,
+        "recurring": false,
+        "active": true,
+        "at": "2023-01-08T00:03:11+00:00",
+        "server_deleted_at": null,
+        "estimated_seconds": 0,
+        "tracked_seconds": 0
+      },
+      {
+        "id": 1235,
+        "name": "fsdfs",
+        "workspace_id": 123456789,
+        "project_id": 123456789,
+        "user_id": null,
+        "recurring": false,
+        "active": false,
+        "at": "2023-01-08T00:03:11+00:00",
+        "server_deleted_at": null,
+        "estimated_seconds": 0,
+        "tracked_seconds": 0
+      }
+    ]);
+
+    with_mockito(
+        Method::GET,
+        "/me/tasks?include_not_active=true&since=1673134409",
+        200,
+        Some(response),
+        |toggl_client| {
+            let me_tasks = toggl_client
+                .me()
+                .get_me_tasks(true, Some(true), Some(1673134409))?;
+
+            assert_eq!(1234, me_tasks[0].id);
+            assert_eq!("fsdfs", me_tasks[0].name);
+            assert_eq!(123456789, me_tasks[0].workspace_id);
+            assert_eq!(123456789, me_tasks[0].project_id);
+            assert_eq!(None, me_tasks[0].user_id);
+            assert_eq!(false, me_tasks[0].recurring);
+            assert_eq!(true, me_tasks[0].active);
+
+            Ok(())
+        },
+    )
+}

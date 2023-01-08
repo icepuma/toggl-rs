@@ -119,7 +119,29 @@ impl MeClient {
             .request_with_params(debug, Method::GET, "me/tags", &params)
     }
 
-    // https://developers.track.toggl.com/docs/api/me#get-tasks
+    /// https://developers.track.toggl.com/docs/api/me#get-tasks
+    pub fn get_me_tasks(
+        &self,
+        debug: bool,
+        include_not_active: Option<bool>,
+        since: Option<u32>,
+    ) -> Result<Vec<model::me::Task>> {
+        let mut params = vec![];
+
+        if let Some(include_not_active) = include_not_active {
+            params.push((
+                "include_not_active".to_string(),
+                include_not_active.to_string(),
+            ));
+        }
+
+        if let Some(since) = since {
+            params.push(("since".to_string(), since.to_string()));
+        }
+
+        self.client
+            .request_with_params(debug, Method::GET, "me/tasks", &params)
+    }
 
     // https://developers.track.toggl.com/docs/api/me#get-trackreminders
 

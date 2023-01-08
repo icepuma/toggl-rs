@@ -138,3 +138,18 @@ pub struct Tag {
     pub name: String,
     pub workspace_id: u32,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Task {
+    pub active: bool,
+    pub at: DateTime<Utc>,
+    pub estimated_seconds: Option<u32>,
+    pub id: u32,
+    pub name: String,
+    pub project_id: u32,
+    pub recurring: bool,
+    pub server_deleted_at: Option<DateTime<Utc>>,
+    pub tracked_seconds: Option<u32>,
+    pub user_id: Option<u32>,
+    pub workspace_id: u32,
+}
