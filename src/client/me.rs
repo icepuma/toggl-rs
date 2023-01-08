@@ -143,7 +143,11 @@ impl MeClient {
             .request_with_params(debug, Method::GET, "me/tasks", &params)
     }
 
-    // https://developers.track.toggl.com/docs/api/me#get-trackreminders
+    /// https://developers.track.toggl.com/docs/api/me#get-trackreminders
+    pub fn get_me_track_reminders(&self, debug: bool) -> Result<Vec<model::me::TrackReminder>> {
+        self.client
+            .request(debug, Method::GET, "me/track_reminders")
+    }
 
     // https://developers.track.toggl.com/docs/api/me#get-webtimer
 }

@@ -601,3 +601,37 @@ fn get_me_tasks() -> Result<()> {
         },
     )
 }
+
+#[test]
+fn get_me_track_reminders() -> Result<()> {
+    let response = json!([
+      {
+        "reminder_id": 5490,
+        "workspace_id": 6967122,
+        "frequency": 1,
+        "threshold": 2,
+        "created_at": "2023-01-08T00:10:32.840314Z",
+        "user_ids": null,
+        "group_ids": null
+      }
+    ]);
+
+    with_mockito(
+        Method::GET,
+        "/me/track_reminders",
+        200,
+        Some(response),
+        |toggl_client| {
+            let me_track_reminders = toggl_client.me().get_me_track_reminders(true)?;
+
+            assert_eq!(5490, me_track_reminders[0].reminder_id);
+            assert_eq!(6967122, me_track_reminders[0].workspace_id);
+            assert_eq!(1, me_track_reminders[0].frequency);
+            assert_eq!(2, me_track_reminders[0].threshold);
+            assert_eq!(None, me_track_reminders[0].user_ids);
+            assert_eq!(None, me_track_reminders[0].group_ids);
+
+            Ok(())
+        },
+    )
+}

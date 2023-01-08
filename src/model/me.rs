@@ -153,3 +153,14 @@ pub struct Task {
     pub user_id: Option<u32>,
     pub workspace_id: u32,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct TrackReminder {
+    pub created_at: DateTime<Utc>,
+    pub frequency: u32,
+    pub group_ids: Option<Vec<u32>>,
+    pub reminder_id: u32,
+    pub threshold: u32,
+    pub user_ids: Option<Vec<u32>>,
+    pub workspace_id: u32,
+}
